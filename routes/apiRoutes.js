@@ -17,8 +17,9 @@ module.exports = (app) => {
   // ---------------------------------------------------------------------------
 
   app.get('/api/notes', (req, res) => {
-      const allNotes = fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8')
-      res.json(allNotes)
+      const allNotes = fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8');
+
+      res.send(allNotes);
     });
 
 
@@ -34,15 +35,13 @@ module.exports = (app) => {
     // Note the code here. Our "server" will respond to requests and let users know if they have a table or not.
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body parsing middleware
-    // TODO: Implement the function needed to add a note
     let newNote = req.body;
     newNote.id = createId();
 
     let notesArr = JSON.parse(fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8'));
-    console.log(notesArr);
     notesArr.push(newNote);
- 
-    fs.writeFile((path.join(__dirname, '../db/db.json')), JSON.stringify(notesArr), (err) => {err? console.error(err) : 
+
+    fs.writeFile((path.join(__dirname, '../db/db.json')), JSON.stringify(notesArr, null, 2), (err) => {err? console.error(err) : 
         console.log("Successfully wrote db.json")});
     res.json(newNote);
 
