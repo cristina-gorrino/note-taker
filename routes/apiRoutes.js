@@ -52,7 +52,7 @@ module.exports = (app) => {
   }
 
 
-// TODO : Replace with delete route
+// Delete route finds note by ID and removes it from the db.json file
   app.delete('/api/notes/:id', (req, res) => {
     const deleteID = req.params.id;
     let notesArr = JSON.parse(fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8'));
