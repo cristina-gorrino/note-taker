@@ -2,7 +2,10 @@
 // We are linking our routes to a series of "data" sources.
 // These data sources hold arrays of information on table-data, waitinglist, etc.
 
+const path = require('path');
 const notesDB = require('../db/db.json');
+const {v4: uuidv4} = require('uuid');
+const fs = require('fs');
 
 // ROUTING
 
@@ -13,7 +16,10 @@ module.exports = (app) => {
   // (ex: localhost:PORT/api/admin... they are shown a JSON of the data in the table)
   // ---------------------------------------------------------------------------
 
-  app.get('/api/notes', (req, res) => res.json(notesDB));
+  app.get('/api/notes', (req, res) => {
+      const allNotes = fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8')
+      res.json(allNotes)
+    });
 
 
   // API POST Requests
@@ -29,14 +35,22 @@ module.exports = (app) => {
     // It will do this by sending out the value "true" have a table
     // req.body is available since we're using the body parsing middleware
     // TODO: Implement the function needed to add a note
-    if (tableData.length < 5) {
-      tableData.push(req.body);
-      res.json(true);
-    } else {
-      waitListData.push(req.body);
-      res.json(false);
-    }
+    let newNote = req.body;
+    newNote.id = createId();
+
+    let notesArr = JSON.parse(fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8'));
+    console.log(notesArr);
+    notesArr.push(newNote);
+ 
+    fs.writeFile((path.join(__dirname, '../db/db.json')), JSON.stringify(notesArr), (err) => {err? console.error(err) : 
+        console.log("Successfully wrote db.json")});
+    res.json(newNote);
+
   });
+  function createId() {
+    const uniqueId = uuidv4();
+    return uniqueId;
+  }
 
   // I added this below code so you could clear out the table while working with the functionality.
   // Don"t worry about it!
