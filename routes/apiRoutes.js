@@ -51,13 +51,18 @@ module.exports = (app) => {
     return uniqueId;
   }
 
-  // I added this below code so you could clear out the table while working with the functionality.
-  // Don"t worry about it!
+
 // TODO : Replace with delete route
-  app.post('/api/clear', (req, res) => {
-    // Empty out the arrays of data
-    tableData.length = 0;
-    waitListData.length = 0;
+  app.delete('/api/notes/:id', (req, res) => {
+    const deleteID = req.params.id;
+    let notesArr = JSON.parse(fs.readFileSync((path.join(__dirname, '../db/db.json')), 'utf8'));
+
+    let deleteNote = notesArr.find((note) => note.id === deleteID);
+    let position = notesArr.indexOf(deleteNote);
+    notesArr.splice(position, 1);
+
+    fs.writeFile((path.join(__dirname, '../db/db.json')), JSON.stringify(notesArr, null, 2), (err) => {err? console.error(err) : 
+        console.log("Successfully wrote db.json")});
 
     res.json({ ok: true });
   });
