@@ -11,6 +11,7 @@
     "express": "^4.17.1",
     "uuid": "^8.3.2"
   },
+  "engines": {"node": "14.16.1"},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cristina-gorrino/note-taker.git"
